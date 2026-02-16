@@ -46,9 +46,10 @@ public class UserController {
             System.out.println("Utilizador já foi criado");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Utilizador já existe");
         }
-        var userCreated = this.userRepository.save(userModel);
         var passwordHashed = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
         userModel.setPassword(passwordHashed);
+        var userCreated = this.userRepository.save(userModel);
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
     }
 }
