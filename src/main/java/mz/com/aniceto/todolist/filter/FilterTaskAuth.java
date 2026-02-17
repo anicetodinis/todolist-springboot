@@ -2,6 +2,7 @@ package mz.com.aniceto.todolist.filter;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,8 @@ public class FilterTaskAuth extends OncePerRequestFilter {
                 System.out.println("user encontrado"+user.getPassword());
                 var passwordVerify = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
                 if (passwordVerify.verified) {
+                    
+                    request.setAttribute("idUser", user.getId());
                     filterChain.doFilter(request, response);
                 } else {
                     response.sendError(401);
