@@ -8,7 +8,7 @@ COPY . .
 RUN apt-get install maven
 RUN mvn clean install
 
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-slim
 
 EXPOSE 8080
 
