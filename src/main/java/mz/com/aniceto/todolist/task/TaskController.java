@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import mz.com.aniceto.todolist.utils.Utils;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -77,6 +78,25 @@ public class TaskController {
         Utils.copyNonNullPropertyNames(taskModel, task);
 
         return ResponseEntity.ok().body(this.taskRepository.save(task));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable UUID id, @RequestBody TaskModel taskModel, HttpServletRequest request) {
+        var task = this.taskRepository.findById(id).orElse(null);
+        //tarefa nao encontrada
+        if (task == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarefa nao encontrada");
+        }
+
+         //user sem permissao
+        var idUser = request.getAttribute("idUser");
+        if(!task.getIdUser().equals(idUser)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario nao autorizado");
+        }
+
+        this.taskRepository.delete(task);
+
+        return ResponseEntity.ok().body("Task eliminada com sucesso");
     }
     
 }
